@@ -1,14 +1,35 @@
 <html>
     <head>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <title>
             Submit IMDB links
         </title>
     </head>
-    
+
     <body>
-        <form action="/api/create/" method="POST" name="form">
+        <form action="" method="POST" name="form", id="formId">
             Input URL:<input type="text" name="url">
-            <input type="submit" value="submit">
+            <input type='submit' value='Submit form' />
         </form>
+        <script type="text/javascript">
+            $( "#formId" ).submit(function( event ) {
+            alert( "Handler for .submit() called." );
+            var jqxhr = $.post( "/api/create", function() {
+                alert( "success" );
+            })
+                .done(function() {
+                alert( "request done" );
+                })
+                .fail(function() {
+                alert( "error" );
+                })
+                .always(function() {
+                alert( "finished" );
+                });
+            event.preventDefault();
+            });
+        </script>
+
+
     </body>
 </html>
