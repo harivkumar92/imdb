@@ -1,0 +1,19 @@
+{
+  "name": "imdb",
+  "version": "1.0.0",
+  "description": "A Node.js RESTful API which takes a URL as query parameter and fetch information from it.",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "imdb"
+  ],
+  "author": "Hari Kumar Vijayan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "nodemon": "^1.18.6"
+  }
+}
