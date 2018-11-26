@@ -24,7 +24,7 @@ class Movie {
             plot: { type: Sequelize.STRING(500)},
             director: { type: Sequelize.STRING(20)},
             writer: { type: Sequelize.STRING(20)},
-            stars: { type: Sequelize.STRING(500)},
+            stars: { type: Sequelize.STRING(100)},
             rating: { type: Sequelize.FLOAT }
             },{ 
                 timestamps: true
