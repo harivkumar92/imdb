@@ -6,6 +6,9 @@ var moviedb = require('../model/movies_Database');
 var app = express();
 movie = new moviedb();
 
+
+//Control goes here when client naviagates to localhost:3000/api/create
+//api is on a seperate route for better real-time functionality
 router.post('/create', (req, res, next) => {
     var title, plot, director, writer, stars, rating;
     var url = req.body.url;
@@ -18,10 +21,10 @@ router.post('/create', (req, res, next) => {
         rating: ""
     };
 
+    //Request module takes in a url and returns the full html in the callback
     request(url, function(error, response, html) {
 
         if(!error) {
-
             //Load the html into cheerio so we can access elements easily using ajax
             var $ = cheerio.load(html);
 

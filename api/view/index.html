@@ -7,7 +7,7 @@
     <h1>IMDB API </h1>
     <form id="create-form">
         <input type="text" id="url-input" size="38">
-        <button>POST URL</button> 
+        <input type="submit" value="Check" onclick="validate()"> 
         <span> Sample: https://www.imdb.com/title/tt1375666/ </span>
     </form>
     <hr>
@@ -17,6 +17,16 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
+        function validate() {
+        var url = document.getElementById("url-input").value;
+        var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+        if (pattern.test(url)) {
+            return true;
+        } 
+            alert("Url is not valid!");
+            return false;
+ 
+    }
         //Use Ajax POST to prevent page reloads
         $(function() {
             $('#create-form').on('submit', function(event) {
