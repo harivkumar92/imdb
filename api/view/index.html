@@ -1,35 +1,51 @@
+<!DOCTYPE html>
 <html>
-    <head>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <title>
-            Submit IMDB links
-        </title>
-    </head>
+<head>
+    <title>Code Test</title>
+</head>
+<body>
+    <h1>IMDB API </h1>
+    <form id="create-form">
+        <input type="text" id="url-input" size="38">
+        <button>POST URL</button> 
+        <span> Sample: https://www.imdb.com/title/tt1375666/ </span>
+    </form>
+    <hr>
+    <table>
+        <tbody></tbody>
+    </table>
 
-    <body>
-        <form action="" method="POST" name="form", id="formId">
-            Input URL:<input type="text" name="url">
-            <input type='submit' value='Submit form' />
-        </form>
-        <script type="text/javascript">
-            $( "#formId" ).submit(function( event ) {
-            alert( "Handler for .submit() called." );
-            var jqxhr = $.post( "/api/create", function() {
-                alert( "success" );
-            })
-                .done(function() {
-                alert( "request done" );
-                })
-                .fail(function() {
-                alert( "error" );
-                })
-                .always(function() {
-                alert( "finished" );
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        //Use Ajax POST to prevent page reloads
+        $(function() {
+            $('#create-form').on('submit', function(event) {
+                event.preventDefault();
+                var urlInput = $('#url-input');
+
+                $.ajax({
+                    url: '/api/create',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ url: urlInput.val() }),
+                    success: function(response) {
+                        console.log("Success");
+                        var body = $('tbody');
+                        body.html('');
+                        
+                        body.append('\
+                            <span> Title: </span>' + response.title + '<br>\
+                            <span> Plot: </span>' + response.plot + '<br>\
+                            <span> Director: </span>' + response.director + '<br>\
+                            <span> Writer: </span>' + response.writer + '<br>\
+                            <span> Stars: </span>' + response.stars + '<br>\
+                            <span> Rating: </span>' + response.rating + '<br>\
+                        ');
+                    }
                 });
-            event.preventDefault();
             });
-        </script>
+        });
+    </script>
 
-
-    </body>
+</body>
 </html>

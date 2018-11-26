@@ -4,10 +4,11 @@ var request = require('request');
 var cheerio = require('cheerio');
 var moviedb = require('../model/movies_Database');
 var app = express();
+movie = new moviedb();
 
-router.get('/create', (req, res, next) => {
+router.post('/create', (req, res, next) => {
     var title, plot, director, writer, stars, rating;
-    var url = 'https://www.imdb.com/title/tt1375666/';
+    var url = req.body.url;
     var jsonMovie = { 
         title: "", 
         plot: "", 
@@ -17,40 +18,67 @@ router.get('/create', (req, res, next) => {
         rating: ""
     };
 
-    var temp = {
-        title: ""
-    };
-
     request(url, function(error, response, html) {
 
-        // First we'll check to make sure no errors occurred when making the request
-
         if(!error) {
-            // Next, we'll utilize the cheerio library on the returned html which will essentially give us jQuery functionality
+
+            //Load the html into cheerio so we can access elements easily using ajax
             var $ = cheerio.load(html);
 
-            // Finally, we'll define the variables we're going to capture
-
+            //Fetch movie title - Making Ajax calls to retreive DOM element, store into jsonMovie object
             $('.title_wrapper').filter(function() {
-                var data = $(this);
+                let data = $(this);
                 title = data.children().first().text();
             });
             jsonMovie.title = title;
-            temp.title = title;
-            console.log(temp);
-            moviedb.addTemp(temp);
-            
+            console.log(jsonMovie.title);
+
+            //Fetch movie plot
+            $('.summary_text').filter(function() {
+                let data = $(this);
+                plot = data.text();
+            });
+            jsonMovie.plot = plot;
+            console.log(jsonMovie.plot);
+
+            //Fetch movie director
+            $('.summary_text').filter(function() {
+                let data = $(this);
+                director = data.next().children().next().text();
+                console.log("director : ",director);
+            })
+            jsonMovie.director = director;
+
+            //Fetch movie writer
+            $('.summary_text').filter(function() {
+                let data = $(this);
+                writer = data.next().next().children().next().text();
+                console.log("writer: ", writer);
+            })
+            jsonMovie.writer = writer;
+
+            //Fetch movie stars
+            $('.summary_text').filter(function() {
+                let data = $(this);
+                stars = data.next().next().next().children().nextUntil().prevUntil('.inline').text();
+                console.log("stars: ",stars);
+            })
+            jsonMovie.stars = stars;
+
+            //Fetch movie rating
+            $('.ratingValue').filter(function() {
+                let data = $(this);
+                rating = data.children().children().text();
+                console.log("rating: ",rating);
+            })
+            jsonMovie.rating = rating;
+
+            //Send the json object to model where it gets stored in mysql
+            movie.addMovie(jsonMovie);
         }
+        //provide final json as response back to client
+        res.send(jsonMovie);
     });
 });
-
-
-router.post('/api/create', (req, res, next) => {
-    var request = req;
-    var response = res;
-
-   
-});
-
 
 module.exports = router;

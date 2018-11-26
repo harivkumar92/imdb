@@ -1,15 +1,13 @@
-//const Role = require('../models/role_model');
-//const Base = require('../models/BaseClass_model');
-//const config = require('f:/Freelance/git/UserManagement/config');
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('movies', 'user', 'password', {
-    host: 'localhost',
-    dialect: 'mysql',
+const config = require('../config');
+const sequelize = new Sequelize(config.db.name, config.db.con_name, config.db.con_password, {
+    host: config.db.host,
+    dialect: config.db.dialect,
     operatorsAliases: false,
     pool: {
         max: 5,
         min: 0,
-        acquire: 30000,
+        acquire: config.db.port,
         idle: 10000
     }
 });
@@ -17,46 +15,26 @@ const sequelize = new Sequelize('movies', 'user', 'password', {
 class Movie {
     constructor(){
         this.movieTable;
-        const movieTemp = 0;
     }
     createMovieTable(){
-        this.movieTable = sequelize.define('movieDetails', {
+        //Create movie table
+        this.movieTable = sequelize.define(config.db.movieTableName, {
             movie_id: { type: Sequelize.INTEGER(11), autoIncrement: true, primaryKey: true },
-            title: { type: Sequelize.STRING(20) },
-            plot: { type: Sequelize.STRING(100)},
-            director: { type: Sequelize.INTEGER},
-            writer: { type: Sequelize.STRING(20), defaultValue: 'inactive' },
-            stars: { type: Sequelize.FLOAT(2,1) },
-            rating: { type: Sequelize.MEDIUMINT }
+            title: { type: Sequelize.STRING(20)},
+            plot: { type: Sequelize.STRING(500)},
+            director: { type: Sequelize.STRING(20)},
+            writer: { type: Sequelize.STRING(20)},
+            stars: { type: Sequelize.STRING(500)},
+            rating: { type: Sequelize.FLOAT }
             },{ 
                 timestamps: true
             });
         sequelize.sync();  
     }
-
-    createTemp(){
-        movieTemp = sequelize.define('temp', {
-            movie_id: { type: Sequelize.INTEGER(11), autoIncrement: true, primaryKey: true },
-            temp: { type: Sequelize.STRING(20) }
-            },{ 
-                timestamps: true
-            });
-        sequelize.sync();  
-        
-    }
-
-    addTemp(obj){
-        movieTemp.create({
-            temp: "adasda"
-        });
-    }
-
+    //Add json object to sql
     addMovie(jsonObj){
-        var temp = this.movieTable.create(jsonObj);;
-        return temp;
+        this.movieTable.create(jsonObj);
     }
 }
 
-movie = new Movie();
-movie.addTemp();
-module.exports = movie;
+module.exports = Movie;

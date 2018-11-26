@@ -1,32 +1,31 @@
-//Ensuring that a database of a name in file config.json exists
 const Sequelize = require('sequelize');
-//const config = require('f:/Freelance/git/UserManagement/config');
-//const user = require('../models/user_model');
-//const role = require('../models/role_model');
-const movie = require('./movies_Database');
-const sequelizeCheck = new Sequelize('', 'user', 'password', {
-    host: 'localhost',
-    dialect: 'mysql',
+const movieclass = require('./movies_Database');
+const config = require('../config');
+movie = new movieclass();
+const sequelizeCheck = new Sequelize('', config.db.con_name, config.db.con_password, {
+    host: config.db.host,
+    dialect: config.db.dialect,
     operatorsAliases: false,
     pool: {
         max: 5,
         min: 0,
-        acquire: 30000,
+        acquire: config.db.port,
         idle: 10000
     }
 });
-
+//Check if database exists before every API execution 
 class Database{
     createDatabase(){
         sequelizeCheck
             .authenticate()
             .then(() => { 
                 console.log('Connected to the web server');
-                //Database Creation
+                //Create Database - this check is performed on every execution
                 sequelizeCheck
                     .query("CREATE DATABASE IF NOT EXISTS movies;")
                     .then(() => {
                         console.log('Database is ready');
+                        //Create movie table
                         movie.createMovieTable();
                     })
                     .catch(err => {
@@ -43,5 +42,4 @@ class Database{
 }
 
 database = new Database();
-database.createDatabase();
-module.exports = Database;
+module.exports = database;
